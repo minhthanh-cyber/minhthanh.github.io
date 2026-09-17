@@ -261,9 +261,9 @@
       <div class="compare-card">
         <div class="compare-top"><span>So sánh nhanh</span><span>Cập nhật 09:40</span></div>
         <div class="vs-row">
-          <div class="phone-mini"><div class="swatch"></div><div class="name">Model A</div><div class="sub">SD 8 Gen 4</div></div>
+          <div class="phone-mini"><div class="swatch"></div><div class="name">Model A</div><div class="sub">SD 8 Elite Gen 6 Pro</div></div>
           <div class="vs-badge">VS</div>
-          <div class="phone-mini"><div class="swatch b"></div><div class="name">Model B</div><div class="sub">Dimensity 9500</div></div>
+          <div class="phone-mini"><div class="swatch b"></div><div class="name">Model B</div><div class="sub">Dimensity 9600 Pro</div></div>
         </div>
         <div class="bar-row"><span class="label">CPU</span><div class="bar-track"><div class="bar-fill" style="--w:74%"></div></div></div>
         <div class="bar-row"><span class="label">GPU</span><div class="bar-track"><div class="bar-fill" style="--w:61%"></div></div></div>
@@ -348,7 +348,7 @@
       <div class="auth-card">
         <div class="eyebrow"><span class="dot"></span>Khu vực quản trị</div>
         <h1 style="font-size:1.7rem; max-width:none;">Đăng nhập</h1>
-        <p class="lead" style="margin-top:8px; font-size:0.92rem;">Dành cho Admin và Super Admin quản lý nội dung Minh Thanh.</p>
+        <p class="lead" style="margin-top:8px; font-size:0.92rem;">Dành cho Admin quản lý nội dung Minh Thanh.</p>
         <form id="login-form" style="margin-top:24px; display:flex; flex-direction:column; gap:14px;">
           <div>
             <label class="auth-label">Email</label>
@@ -401,7 +401,7 @@
 <footer>
   <div class="wrap foot-row">
     <span>© 2026 Minh Thanh. Dữ liệu tổng hợp có trích nguồn.</span>
-    <span>Bản xem trước giao diện (mockup tĩnh, điều hướng bằng hash-router) — Phase 11 sẽ dựng bằng Next.js thật.</span>
+    <span>Thông tin về Công nghệ kỹ thuật số</span>
   </div>
 </footer>
  
@@ -410,23 +410,23 @@
   function pad(n){ return n<10 ? "0"+n : ""+n; }
  
   var PHONES = [
-    { slug:"phoenix-x200-pro", title:"Phoenix X200 Pro", tag:"Flagship", meta:["Ra mắt Q1 2027"], summary:"Flagship đầu bảng với màn hình LTPO 120Hz và pin 5.500 mAh.",
-      specs:[["Chip","Snapdragon 8 Elite Gen 5"],["RAM","16GB LPDDR5X"],["Màn hình","6.8\" LTPO 120Hz"],["Pin","5.500 mAh"],["Camera","50MP chính + 48MP tele + 12MP góc rộng"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7, Bluetooth 6.0"]],
+    { slug:"Vivo-x500-Pro-Max", title:"Vivo X500 Pro Max", tag:"Flagship", meta:["Ra mắt 21 tháng 09 2026"], summary:"Flagship đầu bảng với màn hình LTPO 144Hz và pin 7.000 mAh.",
+      specs:[["Chip","Dimencity 9600 Pro"],["RAM","16GB LPDDR6X"],["Màn hình","6.9\" LTPO 144Hz"],["Pin","7.000 mAh"],["Camera","200MP chính + 200MP tele + 50MP góc rộng"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7, Bluetooth 6.0"]],
       related:[{collection:"chips",slug:"snapdragon-8-elite-gen-5"},{collection:"ram",slug:"lpddr5x"}] },
-    { slug:"aurora-n7", title:"Aurora N7", tag:"Cận cao cấp", meta:["Ra mắt Q4 2026"], summary:"Cân bằng hiệu năng Dimensity 9500 và pin 5.200 mAh.",
-      specs:[["Chip","Dimensity 9500"],["RAM","12GB LPDDR5X"],["Màn hình","6.7\" AMOLED 144Hz"],["Pin","5.200 mAh"],["Camera","50MP chính + 12MP siêu rộng"],["Hệ điều hành","Android 16"],["Kết nối","5G, Wi-Fi 6E"]],
-      related:[{collection:"chips",slug:"dimensity-9500"},{collection:"ram",slug:"lpddr5x"}] },
-    { slug:"nova-fold-3", title:"Nova Fold 3", tag:"Gập", meta:["Ra mắt Q1 2027"], summary:"Thế hệ gập thứ ba với bản lề mới và Exynos 2600.",
-      specs:[["Chip","Exynos 2600"],["RAM","16GB LPDDR5X"],["Màn hình","7.9\" gập AMOLED"],["Pin","5.000 mAh"],["Camera","50MP chính + 12MP tele"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7"]],
-      related:[{collection:"chips",slug:"exynos-2600"},{collection:"events",slug:"foldable-launch-mar-2027"}] }
+    { slug:"OPPO-Find-X10-Pro-Max", title:"OPPO Find X10 Pro Max", tag:"Flagship", meta:["Ra mắt 22 tháng 09 2026"], summary:"Cân bằng hiệu năng Dimensity 9600 Pro và pin 8.000 mAh.",
+      specs:[["Chip","Dimensity 9600 Pro"],["RAM","12GB LPDDR6X"],["Màn hình","6.7\" AMOLED 144Hz"],["Pin","8.000 mAh"],["Camera","200MP chính + 200,P tele + 50MP siêu rộng"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7"]],
+      related:[{collection:"chips",slug:"dimensity-9600-pro"},{collection:"ram",slug:"lpddr6x"}] },
+    { slug:"Honor-Magic-9-Pro-Max", title:"Honor Magic 9 Pro Max", tag:"Phẳng", meta:["Ra mắt 28 tháng 09 2026"], summary:"Cân bằng hiệu năng Snapdragon 8 Elite Gen 6 Pro và pin 10.000 mAh",
+      specs:[["Chip","Exynos 2600"],["RAM","16GB LPDDR5X"],["Màn hình","7.9\" gập AMOLED"],["Pin","5.000 mAh"],["Camera","200MP chính + 200MP tele + 50MP siêu rộng"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7"]],
+      related:[{collection:"chips",slug:"exynos-2600"},{collection:"events",slug:"mùa xuân năm 2027"}] }
   ];
  
   var CHIPS = [
-    { slug:"snapdragon-8-elite-gen-5", title:"Snapdragon 8 Elite Gen 5", tag:"Qualcomm", meta:["3nm TSMC"], summary:"Chipset flagship mới nhất của Qualcomm, tiến trình 3nm.",
-      specs:[["Nhà sản xuất","Qualcomm"],["Tiến trình","3nm (TSMC)"],["CPU","2 lõi hiệu năng cao + 6 lõi tiết kiệm điện"],["GPU","Adreno thế hệ mới"],["Xung nhịp","Tối đa 4.32 GHz"],["Kết nối","5G Snapdragon X85, Wi-Fi 7"],["Ngày phát hành","10/2026"]],
+    { slug:"snapdragon-8-elite-gen-6-Pro", title:"Snapdragon 8 Elite Gen 6 Pro", tag:"Qualcomm", meta:["2nm TSMC"], summary:"Chipset flagship mới nhất của Qualcomm, tiến trình 2nm.",
+      specs:[["Nhà sản xuất","Qualcomm"],["Tiến trình","2nm (TSMC)"],["CPU","2 lõi hiệu năng cao + 6 lõi tiết kiệm điện"],["GPU","Adreno thế hệ mới"],["Xung nhịp","Tối đa 4.32 GHz"],["Kết nối","5G Snapdragon X85, Wi-Fi 7"],["Ngày phát hành","10/2026"]],
       related:[{collection:"phones",slug:"phoenix-x200-pro"},{collection:"ram",slug:"lpddr5x"}] },
-    { slug:"dimensity-9500", title:"Dimensity 9500", tag:"MediaTek", meta:["3nm TSMC"], summary:"Chip cận cao cấp mạnh mẽ từ MediaTek.",
-      specs:[["Nhà sản xuất","MediaTek"],["Tiến trình","3nm (TSMC)"],["CPU","1 lõi Cortex-X5 + 3 lõi Cortex-X4 + 4 lõi hiệu năng"],["GPU","Immortalis-G925"],["Xung nhịp","Tối đa 3.63 GHz"],["Kết nối","5G, Wi-Fi 6E"],["Ngày phát hành","09/2026"]],
+    { slug:"dimensity-9600-Pro", title:"Dimensity 9600 Pro", tag:"MediaTek", meta:["2nm TSMC"], summary:"Chip cận cao cấp mạnh mẽ từ MediaTek.",
+      specs:[["Nhà sản xuất","MediaTek"],["Tiến trình","2nm (TSMC)"],["CPU","1 lõi Cortex-X5 + 3 lõi Cortex-X4 + 4 lõi hiệu năng"],["GPU","Immortalis-G925"],["Xung nhịp","Tối đa 3.63 GHz"],["Kết nối","5G, Wi-Fi 6E"],["Ngày phát hành","09/2026"]],
       related:[{collection:"phones",slug:"aurora-n7"}] },
     { slug:"exynos-2600", title:"Exynos 2600", tag:"Samsung", meta:["2nm Samsung"], summary:"Chip đầu tiên của Samsung trên tiến trình 2nm.",
       specs:[["Nhà sản xuất","Samsung Semiconductor"],["Tiến trình","2nm (Samsung Foundry)"],["CPU","10 lõi tuỳ biến"],["GPU","Xclipse thế hệ mới (kiến trúc AMD RDNA)"],["Xung nhịp","Đang cập nhật"],["Kết nối","5G, Wi-Fi 7"],["Ngày phát hành","Dự kiến Q1 2027"]],
@@ -467,7 +467,7 @@
   ];
  
   var EVENTS = [
-    { slug:"flagship-q4-2026", y:2026, mo:10, d:15, monthLabel:"Th10", title:"Sự kiện ra mắt dòng flagship quý 4", tag:"Ra mắt", meta:["15 Tháng 10, 2026","San Jose, Mỹ (trực tuyến)"], location:"San Jose, Mỹ (trực tuyến)", summary:"Dự kiến công bố chip thế hệ mới cùng chuẩn RAM LPDDR5T.",
+    { slug:"flagship-q4-2026", y:2026, mo:10, d:15, monthLabel:"Th10", title:"Sự kiện ra mắt dòng flagship quý 4", tag:"Ra mắt", meta:["21 Tháng 09, 2026","Thượng Hải, Trung Quốc (trực tuyến)"], location:"Thượng Hải, Trung Quốc (trực tuyến)", summary:"Dự kiến công bố chip thế hệ mới cùng chuẩn RAM LPDDR6.",
       body:["Sự kiện được tổ chức trực tuyến, tập trung vào dòng flagship quý 4 với chip thế hệ mới trên tiến trình 3nm.","Theo các nguồn rò rỉ, thiết bị đầu bảng sẽ là mẫu đầu tiên hỗ trợ chuẩn RAM LPDDR5T, cải thiện băng thông bộ nhớ so với thế hệ trước.","Thông tin chính thức về giá bán và ngày mở bán sẽ được cập nhật ngay sau sự kiện."],
       related:[{collection:"ram",slug:"lpddr5t"}] },
     { slug:"dev-conference-nov-2026", y:2026, mo:11, d:2, monthLabel:"Th11", title:"Hội nghị nhà phát triển chip di động", tag:"Hội nghị", meta:["02 Tháng 11, 2026","Đài Bắc, Đài Loan"], location:"Đài Bắc, Đài Loan", summary:"Công bố lộ trình tiến trình sản xuất 2nm cho 2027.",
