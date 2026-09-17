@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minh Thanh — Cơ sở dữ liệu điện thoại, chip &amp; RAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050914; --bg-2:#080d1c;
+    --surface: rgba(255,255,255,0.012); --surface-strong: rgba(255,255,255,0.02);
+    --border: rgba(255,255,255,0.03); --border-strong: rgba(255,255,255,0.052);
+    --text: #eef1f8; --text-dim: #a7b0c6; --text-faint: #6b7590;
+    --accent: #3366CC; --accent-2: #003399; --accent-deep: #003366;
+    --accent-glow: rgba(51,102,204,0.45);
+    --good: #3fb98a; --warn: #d99a3f; --danger: #d95f5f;
+    --radius-lg: 22px; --radius-md: 14px; --radius-sm: 9px;
+    --font-display: 'Manrope', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  :root[data-theme="light"]{
+    --bg:#f2f4f9; --bg-2:#e7eaf3;
+    --surface: rgba(10,20,50,0.009); --surface-strong: rgba(10,20,50,0.016);
+    --border: rgba(10,20,50,0.03); --border-strong: rgba(10,20,50,0.052);
+    --text:#0c1326; --text-dim:#4a5578; --text-faint:#7c85a3;
+    --accent-glow: rgba(51,102,204,0.25);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f2f4f9; --bg-2:#e7eaf3;
+      --surface: rgba(10,20,50,0.009); --surface-strong: rgba(10,20,50,0.016);
+      --border: rgba(10,20,50,0.03); --border-strong: rgba(10,20,50,0.052);
+      --text:#0c1326; --text-dim:#4a5578; --text-faint:#7c85a3;
+      --accent-glow: rgba(51,102,204,0.25);
+    }
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{background:var(--bg); color:var(--text); font-family:var(--font-display); -webkit-font-smoothing:antialiased;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 82% -8%, var(--accent-glow), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(0,51,153,0.30), transparent 55%),
+      var(--bg);
+    min-height:100vh; overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  [hidden]{display:none !important;}
+  [data-link]{cursor:pointer;}
+ 
+  header{position:sticky; top:0; z-index:50; backdrop-filter: blur(10px) saturate(160%); -webkit-backdrop-filter: blur(10px) saturate(160%); background: color-mix(in srgb, var(--bg) 20%, transparent); border-bottom:1px solid var(--border);}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:16px 0; position:relative;}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.15rem; letter-spacing:-0.01em; cursor:pointer;}
+  .logo-mark{width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg,var(--accent),var(--accent-deep)); position:relative; flex:none;}
+  .logo-mark::after{content:""; position:absolute; inset:7px; border-radius:4px; background:var(--bg); opacity:.85;}
+  .navlinks{display:flex; gap:30px; font-size:0.93rem; color:var(--text-dim);}
+  .navlinks a{cursor:pointer; transition:color .15s ease;}
+  .navlinks a:hover, .navlinks a.active{color:var(--text);}
+  .navcta{display:flex; gap:10px; align-items:center;}
+  .btn{border-radius:999px; padding:9px 18px; font-size:0.88rem; font-weight:600; border:1px solid var(--border-strong); transition:transform .15s ease, background .15s ease; cursor:pointer;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-ghost{background:var(--surface); color:var(--text);}
+  .btn-solid{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; border:none; box-shadow:0 8px 24px -8px var(--accent-glow);}
+  .menu-btn{display:none; width:38px; height:38px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface); align-items:center; justify-content:center; cursor:pointer;}
+  .menu-btn span, .menu-btn span::before, .menu-btn span::after{content:""; display:block; width:16px; height:2px; background:var(--text); position:relative;}
+  .menu-btn span::before{position:absolute; top:-5px;}
+  .menu-btn span::after{position:absolute; top:5px;}
+  @media (max-width:860px){
+    .navlinks{position:absolute; top:100%; left:0; right:0; flex-direction:column; gap:0; background:color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter:blur(18px); border:1px solid var(--border); border-top:none; border-radius:0 0 16px 16px; overflow:hidden; max-height:0; transition:max-height .25s ease;}
+    .navlinks.open{max-height:360px;}
+    .navlinks a{padding:14px 24px; border-top:1px solid var(--border); display:block;}
+    .menu-btn{display:flex;}
+    .navcta .btn-ghost{display:none;}
+  }
+ 
+  .hero{padding:76px 0 60px; display:grid; grid-template-columns:1.05fr 0.95fr; gap:52px; align-items:center;}
+  @media (max-width:980px){ .hero{grid-template-columns:1fr; padding:44px 0 40px; gap:36px;} }
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:0.78rem; color:var(--text-dim); background:var(--surface); border:1px solid var(--border); padding:6px 12px; border-radius:999px; margin-bottom:22px;}
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good);}
+  h1{font-size:clamp(2.1rem, 4.2vw, 3.35rem); line-height:1.08; letter-spacing:-0.02em; font-weight:800; max-width:16ch;}
+  .hero p.lead{margin-top:20px; font-size:1.06rem; color:var(--text-dim); max-width:46ch; line-height:1.6;}
+  .search{margin-top:32px; display:flex; gap:8px; padding:8px; border-radius:999px; background:var(--surface); border:1px solid var(--border-strong); backdrop-filter:blur(10px) saturate(160%); -webkit-backdrop-filter:blur(10px) saturate(160%);}
+  .search input{flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:var(--font-display); font-size:0.98rem; padding:10px 14px;}
+  .search input::placeholder{color:var(--text-faint);}
+  .search button{border:none; border-radius:999px; padding:11px 22px; font-weight:700; font-size:0.9rem; background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; cursor:pointer;}
+  .search-tags{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+  .tag{font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim); border:1px solid var(--border); padding:5px 11px; border-radius:999px;}
+ 
+  .compare-card{position:relative; padding:22px; border-radius:var(--radius-lg); background:var(--surface); border:1px solid var(--border-strong); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); box-shadow:0 30px 60px -30px rgba(0,10,40,0.6);}
+  .compare-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+  .compare-top span{font-family:var(--font-mono); font-size:0.72rem; color:var(--text-faint); text-transform:uppercase;}
+  .vs-row{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center; margin-bottom:18px;}
+  .phone-mini{text-align:center;}
+  .phone-mini .swatch{height:86px; border-radius:16px; margin-bottom:10px; background:linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02));}
+  .phone-mini .swatch.b{background:linear-gradient(160deg, var(--accent), var(--accent-deep));}
+  .phone-mini .name{font-weight:700; font-size:0.86rem;}
+  .phone-mini .sub{font-size:0.72rem; color:var(--text-faint); font-family:var(--font-mono);}
+  .vs-badge{font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); border:1px solid var(--border); border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center;}
+  .bar-row{display:flex; align-items:center; gap:10px; font-size:0.78rem; color:var(--text-dim); margin-top:10px;}
+  .bar-row .label{width:92px; font-family:var(--font-mono); font-size:0.7rem; flex:none;}
+  .bar-track{flex:1; height:6px; border-radius:999px; background:var(--surface-strong); overflow:hidden; position:relative;}
+  .bar-fill{position:absolute; inset:0; width:var(--w); border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+ 
+  section{padding:52px 0;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:26px; gap:20px;}
+  .section-head h2{font-size:1.5rem; letter-spacing:-0.01em; font-weight:800;}
+  .section-head p{color:var(--text-dim); font-size:0.9rem; margin-top:6px;}
+  .see-all{font-size:0.85rem; font-weight:600; color:var(--accent); white-space:nowrap;}
+ 
+  .leak-strip{display:grid; grid-auto-flow:column; grid-auto-columns:290px; gap:16px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x proximity;}
+  .leak-strip::-webkit-scrollbar{height:6px;}
+  .leak-strip::-webkit-scrollbar-thumb{background:var(--border-strong); border-radius:99px;}
+  .leak-card{scroll-snap-align:start; padding:18px; border-radius:var(--radius-md); background:var(--surface); border:1px solid var(--border); display:flex; flex-direction:column; gap:12px; transition:border-color .15s ease, transform .15s ease; backdrop-filter:blur(8px) saturate(160%); -webkit-backdrop-filter:blur(8px) saturate(160%);}
+  .leak-card:hover{border-color:var(--border-strong); transform:translateY(-2px);}
+  .status{font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.02em; padding:3px 9px; border-radius:99px; width:fit-content;}
+  .status.published{color:var(--good); background:rgba(63,185,138,0.12); border:1px solid rgba(63,185,138,0.3);}
+  .status.pending{color:var(--warn); background:rgba(217,154,63,0.12); border:1px solid rgba(217,154,63,0.3);}
+  .leak-card h3{font-size:0.98rem; line-height:1.4; font-weight:700;}
+  .leak-meta{display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-faint); font-family:var(--font-mono);}
+ 
+  .phone-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media (max-width:900px){ .phone-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){ .phone-grid{grid-template-columns:1fr;} }
+  .phone-card{border-radius:var(--radius-lg); background:var(--surface); border:1px solid var(--border); padding:20px; display:flex; flex-direction:column; gap:14px; backdrop-filter:blur(9px) saturate(160%); -webkit-backdrop-filter:blur(9px) saturate(160%); transition:border-color .15s ease, transform .15s ease;}
+  .phone-card:hover{border-color:var(--border-strong); transform:translateY(-2px);}
+  .phone-card .shot{height:150px; border-radius:14px; background:linear-gradient(150deg, rgba(255,255,255,0.10), rgba(255,255,255,0.015)); position:relative; overflow:hidden;}
+  .phone-card .shot::after{content:""; position:absolute; width:60%; height:60%; right:-10%; top:-10%; background:radial-gradient(circle, var(--accent-glow), transparent 70%);}
+  .phone-card h3{font-size:1.02rem; font-weight:700;}
+  .phone-card .release{font-size:0.75rem; color:var(--text-faint); font-family:var(--font-mono);}
+  .spec-list{display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; font-size:0.78rem; padding-top:8px; border-top:1px solid var(--border);}
+  .spec-list div span{display:block;}
+  .spec-list .k{color:var(--text-faint); font-family:var(--font-mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:.02em;}
+  .spec-list .v{color:var(--text); font-weight:600; margin-top:2px;}
+ 
+  .lookup-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:800px){ .lookup-grid{grid-template-columns:1fr;} }
+  .lookup-card{border-radius:var(--radius-lg); border:1px solid var(--border); background:var(--surface); padding:24px; backdrop-filter:blur(9px) saturate(160%); -webkit-backdrop-filter:blur(9px) saturate(160%);}
+  .lookup-card h3{font-size:1.02rem; margin-bottom:16px; display:flex; align-items:center; gap:10px;}
+  .lookup-card h3 .ic{width:8px; height:8px; border-radius:2px; background:var(--accent); transform:rotate(45deg);}
+  .stat-row{display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px dashed var(--border); transition:padding-left .15s ease;}
+  .stat-row[data-link]:hover{padding-left:4px; color:var(--accent);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .name{font-size:0.88rem; color:var(--text-dim);}
+  .stat-row .val{font-family:var(--font-mono); font-size:0.92rem; font-weight:600;}
+  .lookup-foot{margin-top:14px; display:block; text-align:right;}
+ 
+  .timeline{position:relative; padding-left:26px;}
+  .timeline::before{content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--border-strong);}
+  .tl-item{position:relative; padding-bottom:26px; cursor:pointer;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:""; position:absolute; left:-26px; top:4px; width:11px; height:11px; border-radius:50%; background:var(--bg); border:2px solid var(--accent);}
+  .tl-date{font-family:var(--font-mono); font-size:0.72rem; color:var(--text-faint); margin-bottom:4px;}
+  .tl-item h4{font-size:0.95rem; font-weight:700; margin-bottom:3px; transition:color .15s ease;}
+  .tl-item:hover h4{color:var(--accent);}
+  .tl-item p{font-size:0.82rem; color:var(--text-dim);}
+ 
+  footer{border-top:1px solid var(--border); padding:36px 0; margin-top:20px;}
+  .foot-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:0.8rem; color:var(--text-faint);}
+  ::selection{background:var(--accent); color:#fff;}
+ 
+  .page-head{padding:44px 0 8px;}
+  .breadcrumb{font-family:var(--font-mono); font-size:0.76rem; color:var(--text-faint); display:flex; align-items:center; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  .breadcrumb a{cursor:pointer; color:var(--text-dim);}
+  .breadcrumb a:hover{color:var(--accent);}
+  .page-head h1{font-size:clamp(1.7rem,3vw,2.4rem); max-width:none;}
+  .page-head p.lead{margin-top:12px; max-width:56ch;}
+ 
+  .month-group{margin-bottom:34px;}
+  .month-group h3{font-family:var(--font-mono); font-size:0.8rem; text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);}
+  .agenda-row{display:flex; gap:18px; align-items:center; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface); backdrop-filter:blur(8px) saturate(160%); -webkit-backdrop-filter:blur(8px) saturate(160%); margin-bottom:12px; cursor:pointer; transition:border-color .15s ease, transform .15s ease;}
+  .agenda-row:hover{border-color:var(--border-strong); transform:translateY(-2px);}
+  .date-badge{flex:none; width:56px; height:56px; border-radius:14px; background:linear-gradient(160deg, var(--accent), var(--accent-deep)); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1;}
+  .date-badge .d{font-size:1.15rem; font-weight:800;}
+  .date-badge .m{font-family:var(--font-mono); font-size:0.62rem; text-transform:uppercase; opacity:.85; margin-top:2px;}
+  .agenda-body{flex:1; min-width:0;}
+  .agenda-body h4{font-size:0.98rem; font-weight:700; margin-bottom:4px;}
+  .agenda-body p{font-size:0.8rem; color:var(--text-dim);}
+  .agenda-tag{flex:none; font-family:var(--font-mono); font-size:0.68rem; color:var(--text-dim); border:1px solid var(--border); padding:5px 10px; border-radius:999px; white-space:nowrap;}
+  @media (max-width:600px){ .agenda-row{flex-wrap:wrap;} .agenda-tag{order:3; margin-left:70px;} }
+ 
+  .event-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  @media (max-width:760px){ .event-grid{grid-template-columns:1fr;} }
+  .event-card{border-radius:var(--radius-lg); border:1px solid var(--border); background:var(--surface); padding:22px; backdrop-filter:blur(9px) saturate(160%); -webkit-backdrop-filter:blur(9px) saturate(160%); cursor:pointer; transition:border-color .15s ease, transform .15s ease; display:flex; flex-direction:column; gap:12px;}
+  .event-card:hover{border-color:var(--border-strong); transform:translateY(-2px);}
+  .event-card-top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  .event-card h3{font-size:1.05rem; font-weight:700; line-height:1.4;}
+  .event-card .loc{font-size:0.8rem; color:var(--text-faint); font-family:var(--font-mono);}
+  .event-card p.desc{font-size:0.86rem; color:var(--text-dim); line-height:1.55;}
+  .event-card .cta{font-size:0.8rem; font-weight:600; color:var(--accent);}
+ 
+  .detail-hero{padding:8px 0 20px; border-bottom:1px solid var(--border); margin-bottom:32px;}
+  .detail-meta{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+  .detail-meta span{font-family:var(--font-mono); font-size:0.76rem; color:var(--text-dim); border:1px solid var(--border); padding:6px 12px; border-radius:999px;}
+  .detail-body{display:grid; grid-template-columns:1.6fr 1fr; gap:36px;}
+  @media (max-width:860px){ .detail-body{grid-template-columns:1fr;} }
+  .detail-body article p{font-size:0.96rem; line-height:1.75; color:var(--text-dim); margin-bottom:16px;}
+  .detail-side{align-self:start; border-radius:var(--radius-lg); border:1px solid var(--border); background:var(--surface); padding:22px; backdrop-filter:blur(9px) saturate(160%); -webkit-backdrop-filter:blur(9px) saturate(160%);}
+  .detail-side h4{font-size:0.9rem; margin-bottom:14px;}
+  .not-found{padding:60px 0; text-align:center; color:var(--text-dim);}
+ 
+  /* ---------- auth / login ---------- */
+  .auth-wrap{min-height:60vh; display:flex; align-items:center; justify-content:center; padding:40px 0;}
+  .auth-card{width:100%; max-width:380px; padding:32px; border-radius:var(--radius-lg); background:var(--surface); border:1px solid var(--border-strong); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); box-shadow:0 30px 60px -30px rgba(0,10,40,0.6);}
+  .auth-label{display:block; font-size:0.78rem; color:var(--text-dim); margin-bottom:6px; font-family:var(--font-mono);}
+  .auth-input{width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border-strong); background:var(--surface-strong); color:var(--text); font-family:var(--font-display); font-size:0.94rem; outline:none;}
+  .auth-input:focus{border-color:var(--accent);}
+  .auth-error{color:var(--danger); font-size:0.82rem;}
+ 
+  /* ---------- admin placeholder ---------- */
+  .admin-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:8px;}
+  @media (max-width:760px){ .admin-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:480px){ .admin-grid{grid-template-columns:1fr;} }
+  .admin-card{padding:18px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface); backdrop-filter:blur(8px) saturate(160%); -webkit-backdrop-filter:blur(8px) saturate(160%);}
+  .admin-card h4{font-size:0.94rem; margin-bottom:6px;}
+  .admin-card p{font-size:0.8rem; color:var(--text-dim);}
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="wrap nav">
+    <div class="logo" data-link="/"><span class="logo-mark"></span>Minh Thanh</div>
+    <nav class="navlinks" id="navlinks">
+      <a data-link="/phones">Điện thoại</a>
+      <a data-link="/chips">Chip</a>
+      <a data-link="/ram">RAM</a>
+      <a data-link="/news">Tin &amp; Rò rỉ</a>
+      <a data-link="/calendar">Lịch</a>
+      <a data-link="/events">Sự kiện</a>
+    </nav>
+    <div class="navcta">
+      <span id="auth-actions"></span>
+      <button class="menu-btn" id="menuBtn" aria-label="Mở menu"><span></span></button>
+    </div>
+  </div>
+</header>
+ 
+<main class="wrap">
+ 
+  <!-- ===================== HOME ===================== -->
+  <div id="view-home">
+    <section class="hero">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>2.480 thiết bị · cập nhật hôm nay</span>
+        <h1>Tra cứu cấu hình điện thoại, chip &amp; RAM — có nguồn, có kiểm chứng.</h1>
+        <p class="lead">Minh Thanh gom dữ liệu thông số kỹ thuật từ mọi hãng, đối chiếu tin rò rỉ với nguồn gốc rõ ràng, và cập nhật lịch ra mắt theo thời gian thực.</p>
+        <div class="search">
+          <input type="text" placeholder="Tìm điện thoại, chip hoặc loại RAM…">
+          <button>Tra cứu</button>
+        </div>
+        <div class="search-tags">
+          <span class="tag">Snapdragon 8 Elite Gen 5</span>
+          <span class="tag">LPDDR5X</span>
+          <span class="tag">Galaxy S26 Ultra</span>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-top"><span>So sánh nhanh</span><span>Cập nhật 09:40</span></div>
+        <div class="vs-row">
+          <div class="phone-mini"><div class="swatch"></div><div class="name">Model A</div><div class="sub">SD 8 Gen 4</div></div>
+          <div class="vs-badge">VS</div>
+          <div class="phone-mini"><div class="swatch b"></div><div class="name">Model B</div><div class="sub">Dimensity 9500</div></div>
+        </div>
+        <div class="bar-row"><span class="label">CPU</span><div class="bar-track"><div class="bar-fill" style="--w:74%"></div></div></div>
+        <div class="bar-row"><span class="label">GPU</span><div class="bar-track"><div class="bar-fill" style="--w:61%"></div></div></div>
+        <div class="bar-row"><span class="label">RAM BW</span><div class="bar-track"><div class="bar-fill" style="--w:83%"></div></div></div>
+        <div class="bar-row"><span class="label">Pin</span><div class="bar-track"><div class="bar-fill" style="--w:52%"></div></div></div>
+      </div>
+    </section>
+ 
+    <section id="sec-leaks">
+      <div class="section-head">
+        <div><h2>Tin tức &amp; rò rỉ</h2><p>Mỗi tin đều gắn nguồn, trạng thái kiểm duyệt và người biên tập.</p></div>
+        <a class="see-all" data-link="/news">Xem tất cả →</a>
+      </div>
+      <div class="leak-strip" id="home-leaks"></div>
+    </section>
+ 
+    <section id="sec-phones">
+      <div class="section-head">
+        <div><h2>Thiết bị mới cập nhật</h2><p>Thông số được chuẩn hoá theo từng trường để tìm kiếm và lọc chính xác.</p></div>
+        <a class="see-all" data-link="/phones">Toàn bộ danh mục →</a>
+      </div>
+      <div class="phone-grid" id="home-phones"></div>
+    </section>
+ 
+    <section id="sec-lookup">
+      <div class="section-head"><div><h2>Chip &amp; RAM nổi bật</h2><p>Đối chiếu nhanh tiến trình sản xuất và băng thông bộ nhớ.</p></div></div>
+      <div class="lookup-grid">
+        <div class="lookup-card">
+          <h3><span class="ic"></span>Chipset đang được tìm nhiều</h3>
+          <div id="home-chips"></div>
+          <a class="see-all lookup-foot" data-link="/chips">Xem tất cả chip →</a>
+        </div>
+        <div class="lookup-card">
+          <h3><span class="ic"></span>Chuẩn RAM phổ biến</h3>
+          <div id="home-ram"></div>
+          <a class="see-all lookup-foot" data-link="/ram">Xem tất cả RAM →</a>
+        </div>
+      </div>
+    </section>
+ 
+    <section id="sec-calendar-teaser">
+      <div class="section-head">
+        <div><h2>Lịch sự kiện</h2><p>Các mốc ra mắt sắp tới, tổng hợp từ lịch chính thức của hãng.</p></div>
+        <a class="see-all" data-link="/calendar">Xem lịch đầy đủ →</a>
+      </div>
+      <div class="timeline" id="home-timeline"></div>
+    </section>
+  </div>
+ 
+  <!-- ===================== CALENDAR (events, grouped by month) ===================== -->
+  <div id="view-calendar" hidden>
+    <div class="page-head">
+      <div class="breadcrumb"><a data-link="/">Trang chủ</a><span>/</span><span>Lịch</span></div>
+      <h1>Lịch sự kiện</h1>
+      <p class="lead">Toàn bộ mốc ra mắt và hội nghị sắp tới, nhóm theo tháng. Bấm vào một mục để xem chi tiết.</p>
+    </div>
+    <section id="calendar-agenda"></section>
+  </div>
+ 
+  <!-- ===================== GENERIC LIST (phones / chips / ram / news / events) ===================== -->
+  <div id="view-list" hidden>
+    <div class="page-head">
+      <div class="breadcrumb"><a data-link="/">Trang chủ</a><span>/</span><span id="list-crumb">…</span></div>
+      <h1 id="list-title">…</h1>
+      <p class="lead" id="list-lead">…</p>
+    </div>
+    <section><div class="event-grid" id="list-grid"></div></section>
+  </div>
+ 
+  <!-- ===================== GENERIC DETAIL ===================== -->
+  <div id="view-detail" hidden>
+    <div class="page-head">
+      <div class="breadcrumb"><a data-link="/">Trang chủ</a><span>/</span><a id="detail-crumb-collection" data-link="/events">…</a><span>/</span><span id="detail-crumb">…</span></div>
+    </div>
+    <div id="detail-content"></div>
+  </div>
+ 
+  <!-- ===================== 404 ===================== -->
+  <!-- ===================== LOGIN ===================== -->
+  <div id="view-login" hidden>
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="eyebrow"><span class="dot"></span>Khu vực quản trị</div>
+        <h1 style="font-size:1.7rem; max-width:none;">Đăng nhập</h1>
+        <p class="lead" style="margin-top:8px; font-size:0.92rem;">Dành cho Admin và Super Admin quản lý nội dung Minh Thanh.</p>
+        <form id="login-form" style="margin-top:24px; display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label class="auth-label">Email</label>
+            <input required type="email" class="auth-input" placeholder="ban@minhthanh.vn" id="login-email">
+          </div>
+          <div>
+            <label class="auth-label">Mật khẩu</label>
+            <input required type="password" class="auth-input" placeholder="••••••••" id="login-password">
+          </div>
+          <p id="login-error" class="auth-error" hidden>Sai email hoặc mật khẩu.</p>
+          <button type="submit" class="btn btn-solid" style="width:100%; padding:12px; margin-top:6px;">Đăng nhập</button>
+        </form>
+        <p style="margin-top:18px; font-size:0.8rem; color:var(--text-faint);">Đây là demo giao diện — chưa kết nối xác thực thật (Phase 5 của roadmap).</p>
+        <a data-link="/" class="see-all" style="display:inline-block; margin-top:10px;">← Về trang chủ</a>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ===================== ADMIN (placeholder dashboard) ===================== -->
+  <div id="view-admin" hidden>
+    <div class="page-head">
+      <div class="breadcrumb"><a data-link="/">Trang chủ</a><span>/</span><span>Quản trị</span></div>
+      <h1>Bảng quản trị</h1>
+      <p class="lead">Đây là khung giao diện admin — khi dựng Next.js thật, mỗi mục dưới đây sẽ là một route được bảo vệ theo role (Phase 6–7).</p>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-card"><h4>Người dùng</h4><p>Quản lý tài khoản, vai trò &amp; quyền.</p></div>
+      <div class="admin-card"><h4>Điện thoại</h4><p>Thêm / sửa / xoá thiết bị và thông số.</p></div>
+      <div class="admin-card"><h4>Chip</h4><p>Quản lý dữ liệu chipset.</p></div>
+      <div class="admin-card"><h4>RAM</h4><p>Quản lý chuẩn RAM &amp; tương thích.</p></div>
+      <div class="admin-card"><h4>Sự kiện</h4><p>Lịch ra mắt &amp; hội nghị.</p></div>
+      <div class="admin-card"><h4>Tin tức &amp; Rò rỉ</h4><p>Duyệt nội dung: Draft → Published.</p></div>
+      <div class="admin-card"><h4>Media</h4><p>Thư viện ảnh &amp; nguồn ảnh.</p></div>
+      <div class="admin-card"><h4>Nguồn tham khảo</h4><p>Quản lý nguồn cho mọi nội dung.</p></div>
+      <div class="admin-card"><h4>Audit log</h4><p>Lịch sử thao tác quan trọng.</p></div>
+      <div class="admin-card"><h4>Cài đặt</h4><p>Cấu hình chung hệ thống.</p></div>
+    </div>
+    <button class="btn btn-ghost" id="admin-logout" style="margin-top:28px;">Đăng xuất</button>
+  </div>
+ 
+  <div id="view-notfound" hidden>
+    <div class="not-found">
+      <h2>Không tìm thấy trang</h2>
+      <p style="margin-top:10px">Mục này chưa tồn tại. <a data-link="/" class="see-all" style="display:inline">Về trang chủ →</a></p>
+    </div>
+  </div>
+ 
+</main>
+ 
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2026 Minh Thanh. Dữ liệu tổng hợp có trích nguồn.</span>
+    <span>Bản xem trước giao diện (mockup tĩnh, điều hướng bằng hash-router) — Phase 11 sẽ dựng bằng Next.js thật.</span>
+  </div>
+</footer>
+ 
+<script>
+(function(){
+  function pad(n){ return n<10 ? "0"+n : ""+n; }
+ 
+  var PHONES = [
+    { slug:"phoenix-x200-pro", title:"Phoenix X200 Pro", tag:"Flagship", meta:["Ra mắt Q1 2027"], summary:"Flagship đầu bảng với màn hình LTPO 120Hz và pin 5.500 mAh.",
+      specs:[["Chip","Snapdragon 8 Elite Gen 5"],["RAM","16GB LPDDR5X"],["Màn hình","6.8\" LTPO 120Hz"],["Pin","5.500 mAh"],["Camera","50MP chính + 48MP tele + 12MP góc rộng"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7, Bluetooth 6.0"]],
+      related:[{collection:"chips",slug:"snapdragon-8-elite-gen-5"},{collection:"ram",slug:"lpddr5x"}] },
+    { slug:"aurora-n7", title:"Aurora N7", tag:"Cận cao cấp", meta:["Ra mắt Q4 2026"], summary:"Cân bằng hiệu năng Dimensity 9500 và pin 5.200 mAh.",
+      specs:[["Chip","Dimensity 9500"],["RAM","12GB LPDDR5X"],["Màn hình","6.7\" AMOLED 144Hz"],["Pin","5.200 mAh"],["Camera","50MP chính + 12MP siêu rộng"],["Hệ điều hành","Android 16"],["Kết nối","5G, Wi-Fi 6E"]],
+      related:[{collection:"chips",slug:"dimensity-9500"},{collection:"ram",slug:"lpddr5x"}] },
+    { slug:"nova-fold-3", title:"Nova Fold 3", tag:"Gập", meta:["Ra mắt Q1 2027"], summary:"Thế hệ gập thứ ba với bản lề mới và Exynos 2600.",
+      specs:[["Chip","Exynos 2600"],["RAM","16GB LPDDR5X"],["Màn hình","7.9\" gập AMOLED"],["Pin","5.000 mAh"],["Camera","50MP chính + 12MP tele"],["Hệ điều hành","Android 17"],["Kết nối","5G, Wi-Fi 7"]],
+      related:[{collection:"chips",slug:"exynos-2600"},{collection:"events",slug:"foldable-launch-mar-2027"}] }
+  ];
+ 
+  var CHIPS = [
+    { slug:"snapdragon-8-elite-gen-5", title:"Snapdragon 8 Elite Gen 5", tag:"Qualcomm", meta:["3nm TSMC"], summary:"Chipset flagship mới nhất của Qualcomm, tiến trình 3nm.",
+      specs:[["Nhà sản xuất","Qualcomm"],["Tiến trình","3nm (TSMC)"],["CPU","2 lõi hiệu năng cao + 6 lõi tiết kiệm điện"],["GPU","Adreno thế hệ mới"],["Xung nhịp","Tối đa 4.32 GHz"],["Kết nối","5G Snapdragon X85, Wi-Fi 7"],["Ngày phát hành","10/2026"]],
+      related:[{collection:"phones",slug:"phoenix-x200-pro"},{collection:"ram",slug:"lpddr5x"}] },
+    { slug:"dimensity-9500", title:"Dimensity 9500", tag:"MediaTek", meta:["3nm TSMC"], summary:"Chip cận cao cấp mạnh mẽ từ MediaTek.",
+      specs:[["Nhà sản xuất","MediaTek"],["Tiến trình","3nm (TSMC)"],["CPU","1 lõi Cortex-X5 + 3 lõi Cortex-X4 + 4 lõi hiệu năng"],["GPU","Immortalis-G925"],["Xung nhịp","Tối đa 3.63 GHz"],["Kết nối","5G, Wi-Fi 6E"],["Ngày phát hành","09/2026"]],
+      related:[{collection:"phones",slug:"aurora-n7"}] },
+    { slug:"exynos-2600", title:"Exynos 2600", tag:"Samsung", meta:["2nm Samsung"], summary:"Chip đầu tiên của Samsung trên tiến trình 2nm.",
+      specs:[["Nhà sản xuất","Samsung Semiconductor"],["Tiến trình","2nm (Samsung Foundry)"],["CPU","10 lõi tuỳ biến"],["GPU","Xclipse thế hệ mới (kiến trúc AMD RDNA)"],["Xung nhịp","Đang cập nhật"],["Kết nối","5G, Wi-Fi 7"],["Ngày phát hành","Dự kiến Q1 2027"]],
+      related:[{collection:"phones",slug:"nova-fold-3"},{collection:"events",slug:"chip-node-reveal-feb-2027"}] },
+    { slug:"tensor-g6", title:"Tensor G6", tag:"Google", meta:["3nm TSMC"], summary:"Chip tuỳ biến của Google, tối ưu cho AI on-device.",
+      specs:[["Nhà sản xuất","Google (thiết kế), TSMC (sản xuất)"],["Tiến trình","3nm"],["CPU","Kiến trúc tuỳ biến kết hợp lõi Arm mới nhất"],["GPU","Immortalis tuỳ biến"],["Xung nhịp","Đang cập nhật"],["Kết nối","5G, Wi-Fi 7"],["Ngày phát hành","Dự kiến Q3 2027"]],
+      related:[] }
+  ];
+ 
+  var RAM = [
+    { slug:"lpddr5x", title:"LPDDR5X", tag:"Phổ biến nhất", meta:["8.533 Mbps"], summary:"Chuẩn RAM phổ biến nhất trên flagship hiện nay.",
+      specs:[["Loại","LPDDR5X"],["Tốc độ truyền","8.533 Mbps"],["Điện áp","0.6V — tiết kiệm điện hơn LPDDR5"],["Thường thấy ở","Flagship 2025–2027"]],
+      related:[{collection:"phones",slug:"phoenix-x200-pro"},{collection:"phones",slug:"aurora-n7"}] },
+    { slug:"lpddr5t", title:"LPDDR5T", tag:"Mới", meta:["9.600 Mbps"], summary:"Biến thể tốc độ cao hơn của LPDDR5X, bắt đầu xuất hiện cuối 2026.",
+      specs:[["Loại","LPDDR5T"],["Tốc độ truyền","9.600 Mbps"],["Điện áp","Tương đương LPDDR5X"],["Thường thấy ở","Flagship cuối 2026 trở đi"]],
+      related:[{collection:"events",slug:"flagship-q4-2026"}] },
+    { slug:"lpddr6", title:"LPDDR6", tag:"Sắp ra mắt", meta:["10.700 Mbps"], summary:"Chuẩn RAM di động thế hệ tiếp theo, dự kiến thương mại hoá 2027.",
+      specs:[["Loại","LPDDR6"],["Tốc độ truyền","10.700 Mbps (dự kiến)"],["Điện áp","Thấp hơn LPDDR5X"],["Thường thấy ở","Dự kiến flagship 2027–2028"]],
+      related:[] },
+    { slug:"ufs-4-1", title:"UFS 4.1", tag:"Lưu trữ", meta:["Bộ nhớ trong"], summary:"Chuẩn lưu trữ trong tốc độ cao, thường đi kèm LPDDR5X/5T.",
+      specs:[["Loại","UFS 4.1 (bộ nhớ lưu trữ, không phải RAM)"],["Tốc độ đọc tuần tự","~4.300 MB/s"],["Thường thấy ở","Flagship 2025–2027"]],
+      related:[] }
+  ];
+ 
+  var NEWS = [
+    { slug:"camera-sensor-leak", title:"Rò rỉ thông số camera thế hệ tiếp theo từ nhà cung ứng cảm biến", tag:"Đã đăng", meta:["Nguồn: Weibo","2 giờ trước"],
+      summary:"Nhà cung ứng cảm biến để lộ thông số camera chính cho thế hệ flagship tiếp theo.",
+      body:["Theo thông tin rò rỉ từ một tài khoản chuyên theo dõi chuỗi cung ứng trên Weibo, cảm biến camera chính thế hệ mới sẽ có kích thước lớn hơn đáng kể so với thế hệ trước.","Thông tin này chưa được hãng xác nhận chính thức, nhưng độ tin cậy của nguồn tin được đánh giá cao dựa trên lịch sử các lần rò rỉ trước đó."] },
+    { slug:"render-leak-unverified", title:"Ảnh render mặt lưng bị rò rỉ, chưa xác minh nguồn gốc", tag:"Chờ duyệt", meta:["Nguồn: X (Twitter)","5 giờ trước"],
+      summary:"Bộ ảnh render lan truyền trên mạng xã hội, hiện chưa xác minh được nguồn gốc.",
+      body:["Một bộ ảnh render mặt lưng thiết bị được chia sẻ rộng rãi trên X, tuy nhiên tài khoản đăng tải không có lịch sử rò rỉ đáng tin cậy trước đó.","Đội biên tập đang xác minh nguồn gốc trước khi đưa tin này sang trạng thái đã đăng."] },
+    { slug:"ram-standard-confirmed", title:"Nhà sản xuất RAM xác nhận chuẩn bộ nhớ cho dòng flagship 2027", tag:"Đã đăng", meta:["Nguồn: Thông cáo báo chí","Hôm qua"],
+      summary:"Thông cáo báo chí chính thức xác nhận chuẩn RAM sẽ dùng cho flagship 2027.",
+      body:["Trong thông cáo báo chí chính thức, nhà sản xuất RAM xác nhận chuẩn LPDDR5T sẽ được trang bị rộng rãi trên các dòng flagship ra mắt từ cuối 2026.","Đây là chuẩn RAM có tốc độ truyền tải cao hơn LPDDR5X, giúp cải thiện hiệu năng đa nhiệm và xử lý AI on-device."] },
+    { slug:"gpu-benchmark-leak", title:"Benchmark rò rỉ cho thấy hiệu năng GPU tăng đáng kể", tag:"Chờ duyệt", meta:["Nguồn: Geekbench","Hôm qua"],
+      summary:"Điểm benchmark rò rỉ trên Geekbench cho thấy mức tăng hiệu năng GPU đáng chú ý.",
+      body:["Một kết quả benchmark xuất hiện trên cơ sở dữ liệu Geekbench cho thấy điểm số GPU cải thiện đáng kể so với thế hệ chip trước.","Do thiết bị thử nghiệm chưa được công bố tên chính thức, thông tin này vẫn ở trạng thái chờ duyệt cho đến khi có thêm nguồn đối chiếu."] }
+  ];
+ 
+  var EVENTS = [
+    { slug:"flagship-q4-2026", y:2026, mo:10, d:15, monthLabel:"Th10", title:"Sự kiện ra mắt dòng flagship quý 4", tag:"Ra mắt", meta:["15 Tháng 10, 2026","San Jose, Mỹ (trực tuyến)"], location:"San Jose, Mỹ (trực tuyến)", summary:"Dự kiến công bố chip thế hệ mới cùng chuẩn RAM LPDDR5T.",
+      body:["Sự kiện được tổ chức trực tuyến, tập trung vào dòng flagship quý 4 với chip thế hệ mới trên tiến trình 3nm.","Theo các nguồn rò rỉ, thiết bị đầu bảng sẽ là mẫu đầu tiên hỗ trợ chuẩn RAM LPDDR5T, cải thiện băng thông bộ nhớ so với thế hệ trước.","Thông tin chính thức về giá bán và ngày mở bán sẽ được cập nhật ngay sau sự kiện."],
+      related:[{collection:"ram",slug:"lpddr5t"}] },
+    { slug:"dev-conference-nov-2026", y:2026, mo:11, d:2, monthLabel:"Th11", title:"Hội nghị nhà phát triển chip di động", tag:"Hội nghị", meta:["02 Tháng 11, 2026","Đài Bắc, Đài Loan"], location:"Đài Bắc, Đài Loan", summary:"Công bố lộ trình tiến trình sản xuất 2nm cho 2027.",
+      body:["Hội nghị quy tụ các nhà sản xuất chip lớn, công bố lộ trình chuyển sang tiến trình 2nm dự kiến áp dụng từ nửa cuối 2027.","Các phiên thảo luận sẽ xoay quanh hiệu năng trên mỗi watt và khả năng tương thích với chuẩn RAM thế hệ mới."],
+      related:[] },
+    { slug:"midrange-launch-dec-2026", y:2026, mo:12, d:5, monthLabel:"Th12", title:"Ra mắt dòng tầm trung thế hệ mới", tag:"Ra mắt", meta:["05 Tháng 12, 2026","Trực tuyến toàn cầu"], location:"Trực tuyến toàn cầu", summary:"Tập trung vào camera và pin, dùng chip 4nm tiết kiệm điện.",
+      body:["Dòng sản phẩm tầm trung mới được định vị quanh camera và thời lượng pin, sử dụng chip tiến trình 4nm để tối ưu điện năng.","Dự kiến có ba phiên bản RAM khác nhau nhằm phục vụ nhiều phân khúc giá."],
+      related:[] },
+    { slug:"galaxy-s-jan-2027", y:2027, mo:1, d:18, monthLabel:"Th01", title:"Ra mắt dòng Galaxy S đầu năm", tag:"Ra mắt", meta:["18 Tháng 01, 2027","San Francisco, Mỹ"], location:"San Francisco, Mỹ", summary:"Tin rò rỉ cho thấy ba phiên bản với cấu hình RAM khác nhau.",
+      body:["Tin rò rỉ từ nhiều nguồn cho thấy dòng sản phẩm đầu năm sẽ có ba phiên bản, khác biệt chủ yếu ở dung lượng RAM và cụm camera.","Bản cao cấp nhất được đồn đoán trang bị RAM 16GB LPDDR5X cùng cảm biến chính độ phân giải cao hơn thế hệ trước."],
+      related:[{collection:"ram",slug:"lpddr5x"}] },
+    { slug:"chip-node-reveal-feb-2027", y:2027, mo:2, d:10, monthLabel:"Th02", title:"Công bố tiến trình 2nm thương mại đầu tiên", tag:"Hội nghị", meta:["10 Tháng 02, 2027","Hsinchu, Đài Loan"], location:"Hsinchu, Đài Loan", summary:"Nhà máy xác nhận thời điểm sản xuất hàng loạt.",
+      body:["Nhà máy bán dẫn xác nhận mốc thời gian sản xuất hàng loạt cho tiến trình 2nm, mở đường cho các chipset flagship cuối 2027.","Đây được xem là bước ngoặt quan trọng về hiệu năng và điện năng tiêu thụ cho thiết bị di động."],
+      related:[{collection:"chips",slug:"exynos-2600"}] },
+    { slug:"foldable-launch-mar-2027", y:2027, mo:3, d:20, monthLabel:"Th03", title:"Ra mắt điện thoại gập thế hệ 3", tag:"Ra mắt", meta:["20 Tháng 03, 2027","Seoul, Hàn Quốc"], location:"Seoul, Hàn Quốc", summary:"Bản lề mới giúp giảm nếp gấp màn hình đáng kể.",
+      body:["Thế hệ gập thứ ba giới thiệu cơ chế bản lề mới, giảm đáng kể nếp gấp hiển thị trên màn hình chính.","Cấu hình RAM và chip dự kiến giữ ở mức cao nhất trong danh mục sản phẩm của hãng."],
+      related:[{collection:"phones",slug:"nova-fold-3"}] }
+  ];
+ 
+  var COLLECTIONS = {
+    phones: { label:"Điện thoại", pageTitle:"Tất cả điện thoại", lead:"Thông số được chuẩn hoá theo từng trường để tìm kiếm và lọc chính xác.", items:PHONES },
+    chips:  { label:"Chip", pageTitle:"Tất cả chipset", lead:"Thông tin CPU, GPU, tiến trình sản xuất và các thiết bị sử dụng từng chipset.", items:CHIPS },
+    ram:    { label:"RAM", pageTitle:"Tất cả chuẩn RAM", lead:"Các chuẩn RAM di động, tốc độ truyền dữ liệu và khả năng tương thích thiết bị.", items:RAM },
+    news:   { label:"Tin tức & Rò rỉ", pageTitle:"Tất cả tin tức & rò rỉ", lead:"Tin tức và rò rỉ có gắn nguồn, trạng thái kiểm duyệt rõ ràng.", items:NEWS },
+    events: { label:"Sự kiện", pageTitle:"Tất cả sự kiện", lead:"Danh sách đầy đủ các sự kiện ra mắt, hội nghị và cột mốc ngành đã được xác nhận hoặc rò rỉ.", items:EVENTS }
+  };
+ 
+  function tagClassFor(key, item){
+    if(key==='news') return item.tag==='Đã đăng' ? 'status published' : 'status pending';
+    return 'agenda-tag';
+  }
+ 
+  function bindLinks(scope){
+    scope.querySelectorAll('[data-link]').forEach(function(node){
+      node.addEventListener('click', function(){
+        location.hash = '#' + node.getAttribute('data-link');
+      });
+    });
+  }
+ 
+  function renderHomeWidgets(){
+    document.getElementById('home-leaks').innerHTML = NEWS.map(function(n){
+      return '<div class="leak-card" data-link="/news/'+n.slug+'"><span class="'+tagClassFor('news',n)+'">'+n.tag+'</span>'+
+        '<h3>'+n.title+'</h3><div class="leak-meta"><span>'+n.meta[0]+'</span><span>'+n.meta[1]+'</span></div></div>';
+    }).join('');
+ 
+    document.getElementById('home-phones').innerHTML = PHONES.map(function(p){
+      return '<div class="phone-card" data-link="/phones/'+p.slug+'"><div class="shot"></div><div><h3>'+p.title+'</h3><div class="release">'+p.meta[0]+'</div></div>'+
+        '<div class="spec-list">'+p.specs.slice(0,4).map(function(s){return '<div><span class="k">'+s[0]+'</span><span class="v">'+s[1]+'</span></div>';}).join('')+'</div></div>';
+    }).join('');
+ 
+    document.getElementById('home-chips').innerHTML = CHIPS.map(function(c){
+      return '<div class="stat-row" data-link="/chips/'+c.slug+'"><span class="name">'+c.title+'</span><span class="val">'+c.meta[0]+'</span></div>';
+    }).join('');
+ 
+    document.getElementById('home-ram').innerHTML = RAM.map(function(r){
+      return '<div class="stat-row" data-link="/ram/'+r.slug+'"><span class="name">'+r.title+'</span><span class="val">'+r.meta[0]+'</span></div>';
+    }).join('');
+ 
+    var upcoming = EVENTS.slice(0,3);
+    document.getElementById('home-timeline').innerHTML = upcoming.map(function(e){
+      return '<div class="tl-item" data-link="/events/'+e.slug+'"><div class="tl-date">'+e.d+' Tháng '+e.mo+', '+e.y+'</div><h4>'+e.title+'</h4><p>'+e.summary+'</p></div>';
+    }).join('');
+  }
+ 
+  function renderCalendar(){
+    var el = document.getElementById('calendar-agenda');
+    var byMonth = {}, order = [];
+    EVENTS.forEach(function(e){
+      var key = e.y+'-'+pad(e.mo);
+      if(!byMonth[key]){ byMonth[key]=[]; order.push(key); }
+      byMonth[key].push(e);
+    });
+    el.innerHTML = order.map(function(key){
+      var items = byMonth[key];
+      var label = 'Tháng '+items[0].mo+', '+items[0].y;
+      var rows = items.map(function(e){
+        return '<div class="agenda-row" data-link="/events/'+e.slug+'">'+
+          '<div class="date-badge"><span class="d">'+e.d+'</span><span class="m">'+e.monthLabel+'</span></div>'+
+          '<div class="agenda-body"><h4>'+e.title+'</h4><p>'+e.summary+'</p></div>'+
+          '<span class="agenda-tag">'+e.tag+'</span></div>';
+      }).join('');
+      return '<div class="month-group"><h3>'+label+'</h3>'+rows+'</div>';
+    }).join('');
+  }
+ 
+  function renderListView(key){
+    var col = COLLECTIONS[key];
+    document.getElementById('list-crumb').textContent = col.label;
+    document.getElementById('list-title').textContent = col.pageTitle;
+    document.getElementById('list-lead').textContent = col.lead;
+    var grid = document.getElementById('list-grid');
+    grid.innerHTML = col.items.map(function(item){
+      return '<div class="event-card" data-link="/'+key+'/'+item.slug+'">'+
+        '<div class="event-card-top"><span class="'+tagClassFor(key,item)+'">'+item.tag+'</span><span class="loc">'+(item.meta&&item.meta[0]?item.meta[0]:'')+'</span></div>'+
+        '<h3>'+item.title+'</h3><p class="desc">'+item.summary+'</p><span class="cta">Xem chi tiết →</span></div>';
+    }).join('');
+    bindLinks(grid);
+  }
+ 
+  function miniRelatedRow(collectionKey, slugv){
+    var col = COLLECTIONS[collectionKey];
+    if(!col) return '';
+    var item = col.items.find(function(x){ return x.slug===slugv; });
+    if(!item) return '';
+    return '<div class="agenda-row" style="padding:12px" data-link="/'+collectionKey+'/'+item.slug+'">'+
+      '<div class="date-badge" style="width:40px;height:40px;border-radius:10px"><span class="d" style="font-size:0.68rem">'+col.label.slice(0,2).toUpperCase()+'</span></div>'+
+      '<div class="agenda-body"><h4 style="font-size:0.85rem">'+item.title+'</h4></div></div>';
+  }
+ 
+  function renderDetail(key, slugv){
+    var col = COLLECTIONS[key];
+    var crumbCol = document.getElementById('detail-crumb-collection');
+    var crumbLabel = document.getElementById('detail-crumb');
+    var content = document.getElementById('detail-content');
+    if(!col){
+      crumbCol.textContent = ''; crumbLabel.textContent = 'Không tìm thấy';
+      content.innerHTML = '<div class="not-found"><h2>Không tìm thấy</h2></div>';
+      return;
+    }
+    crumbCol.textContent = col.label;
+    crumbCol.setAttribute('data-link','/'+key);
+    var item = col.items.find(function(x){ return x.slug===slugv; });
+    if(!item){
+      crumbLabel.textContent = 'Không tìm thấy';
+      content.innerHTML = '<div class="not-found"><h2>Không tìm thấy nội dung này</h2><p style="margin-top:10px"><a data-link="/'+key+'" class="see-all" style="display:inline">← Về danh sách '+col.label.toLowerCase()+'</a></p></div>';
+      bindLinks(content);
+      return;
+    }
+    crumbLabel.textContent = item.title;
+ 
+    var metaPills = (item.meta||[]).map(function(m){ return '<span>'+m+'</span>'; }).join('');
+    var mainHtml = '';
+    if(item.specs){
+      mainHtml += '<div class="lookup-card" style="margin-bottom:24px"><h3>Thông số kỹ thuật</h3>' +
+        item.specs.map(function(s){ return '<div class="stat-row"><span class="name">'+s[0]+'</span><span class="val">'+s[1]+'</span></div>'; }).join('') +
+        '</div>';
+    }
+    if(item.body){
+      mainHtml += '<article>' + item.body.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</article>';
+    }
+ 
+    var relatedList = (item.related && item.related.length) ? item.related : [];
+    var relatedHtml = relatedList.map(function(r){ return miniRelatedRow(r.collection, r.slug); }).join('');
+    if(!relatedHtml){
+      relatedHtml = col.items.filter(function(x){ return x.slug!==item.slug; }).slice(0,3).map(function(x){ return miniRelatedRow(key, x.slug); }).join('');
+    }
+ 
+    content.innerHTML =
+      '<div class="detail-hero"><span class="'+tagClassFor(key,item)+'">'+item.tag+'</span>'+
+      '<h1 style="margin-top:14px; font-size:clamp(1.6rem,3vw,2.3rem)">'+item.title+'</h1>'+
+      '<div class="detail-meta">'+metaPills+'</div></div>'+
+      '<div class="detail-body"><div>'+mainHtml+'</div>'+
+      '<aside class="detail-side"><h4>Liên quan</h4>'+relatedHtml+'</aside></div>';
+    bindLinks(content);
+  }
+ 
+  var views = {
+    home: document.getElementById('view-home'),
+    calendar: document.getElementById('view-calendar'),
+    list: document.getElementById('view-list'),
+    detail: document.getElementById('view-detail'),
+    notfound: document.getElementById('view-notfound')
+  };
+  var COLLECTION_KEYS = Object.keys(COLLECTIONS);
+ 
+  function setActiveNav(path){
+    document.querySelectorAll('.navlinks a[data-link]').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-link')===path);
+    });
+  }
+  function showView(name){
+    Object.keys(views).forEach(function(k){ views[k].hidden = (k!==name); });
+  }
+  function closeMobileNav(){
+    document.getElementById('navlinks').classList.remove('open');
+  }
+ 
+  function router(){
+    var hash = location.hash.replace(/^#/,'') || '/';
+    var parts = hash.split('/').filter(Boolean);
+    window.scrollTo(0,0);
+    closeMobileNav();
+ 
+    if(parts.length===0){
+      showView('home'); setActiveNav('/');
+    } else if(parts[0]==='calendar' && parts.length===1){
+      showView('calendar'); setActiveNav('/calendar');
+    } else if(COLLECTION_KEYS.indexOf(parts[0])!==-1 && parts.length===1){
+      renderListView(parts[0]); showView('list'); setActiveNav('/'+parts[0]);
+    } else if(COLLECTION_KEYS.indexOf(parts[0])!==-1 && parts.length===2){
+      renderDetail(parts[0], parts[1]); showView('detail'); setActiveNav('');
+    } else {
+      showView('notfound'); setActiveNav('');
+    }
+  }
+ 
+  document.getElementById('menuBtn').addEventListener('click', function(){
+    document.getElementById('navlinks').classList.toggle('open');
+  });
+ 
+  bindLinks(document);
+  renderHomeWidgets();
+  renderCalendar();
+ 
+  window.addEventListener('hashchange', router);
+  router();
+})();
+</script>
+ 
+</body>
+</html>
+ 
